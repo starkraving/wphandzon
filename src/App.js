@@ -1,25 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import WPService from './services/wp';
+import ContentProvider from './providers/content.provider';
+import LiveEditor from './components/liveeditor/LiveEditor';
+import PropertyEditor from './components/propertyeditor/PropertyEditor';
 
 function App() {
+  const wpService = new WPService();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ContentProvider pageService={wpService}>
+      <LiveEditor/>
+      <PropertyEditor/>
+    </ContentProvider>
   );
 }
 
