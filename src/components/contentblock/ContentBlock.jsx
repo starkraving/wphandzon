@@ -7,7 +7,7 @@ const ContentBlock = ({styles, html, layout, children}) => {
         };
     };
 
-    // will want to switch from inline styles to styled component with layout as arg
+    // will want to switch from inline styles to styled component with layout, styles and children as arg
     const layoutStyles = (layout) ? {
             gridRow: layout.row,
             msGridRow: layout.row,
@@ -20,7 +20,7 @@ const ContentBlock = ({styles, html, layout, children}) => {
             display: 'grid',
             msDisplay: 'grid',
             gridTemplateColumns: 'repeat(12, 1fr)',
-            msGridColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1f4 1fr 1fr 1fr'
+            msGridColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr'
         } : {};
 
     styles = {
