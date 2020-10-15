@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import {addNewContent} from '../utils/content';
 
 const defaults = {
     content: []
@@ -6,38 +7,31 @@ const defaults = {
 
 export const ContentContext = React.createContext({
     content: defaults.content,
-    addContent: () => {},
-    editContent: () => {},
-    removeContent: () => {}
+    addContent: (row, newContent) => {},
+    editContent: (row, id, content) => {},
+    removeContent: (row, id) => {}
 });
 
 const ContentProvider = ({pageService, children}) => {
     const [content, setContent] = useState(defaults.content);
 
     const addContent = (row, newContent) => {
-        newContent = {
-            ...newContent,
-            id: new Date().getTime()
-        };
-        if (row === null) {
-            content.push([newContent])
-        }
-        if (!isNaN(row) && content.length > row) {
-            content[row].push(newContent);
-        }
-        
-        setContent(content);
+        setContent(addNewContent(content, row, newContent));
     };
     
     const editContent = (row, id, content) => {};
 
     const removeContent = (row, id) => {};
 
-    useEffect(() => {
+    const getInitialContent = useCallback(() => {
         pageService.getPageData().then(data => {
             setContent(data);
         });
     }, [pageService]);
+
+    useEffect(() => {
+        getInitialContent();
+    }, [getInitialContent]);
 
     return (
         <ContentContext.Provider value={{

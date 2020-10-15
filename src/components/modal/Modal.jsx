@@ -5,11 +5,11 @@ import { useEffect } from 'react';
 import { ModalContext } from '../../providers/modal.provider';
 
 const Modal = ({title, children, submitText}) => {
-    const {open, setIsOpen, onSubmit, onCancel} = useContext(ModalContext);
+    const {open, customSubmit, customCancel, setIsModalOpen, onSubmit, onCancel} = useContext(ModalContext);
 
     useEffect(() => {
-        setIsOpen(open);
-    }, [setIsOpen, open]);
+        setIsModalOpen(open);
+    }, [setIsModalOpen, open]);
 
     const closeModal = (e) => {
        e.stopPropagation();
@@ -30,10 +30,10 @@ const Modal = ({title, children, submitText}) => {
                     {children}
                 </ModalContent>
                 {
-                    (submitText)
+                    (customSubmit || customCancel)
                         ? (
                             <ModalButtons>
-                                <button type='submit' onClick={onSubmit}>{submitText}</button>
+                                {customSubmit ? <button type='submit' onClick={onSubmit}>{submitText}</button> : ''}
                                 <button type='button' onClick={closeModal}>Cancel</button>
                             </ModalButtons>
                           )
