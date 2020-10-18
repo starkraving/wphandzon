@@ -2,7 +2,7 @@ import React from 'react';
 import useStylesFromCoords from '../../hooks/useStylesFromCoords';
 import { Border } from './styles';
 
-const ContentHighlighter = ({coords}) => {
+const ActiveContentHighlighter = ({coords}) => {
     const {topBorderStyles, rightBorderStyles, bottomBorderStyles, leftBorderStyles} = useStylesFromCoords(coords);
 
     return (
@@ -15,4 +15,4 @@ const ContentHighlighter = ({coords}) => {
     );
 }
 
-export default ContentHighlighter;
+export default ActiveContentHighlighter;

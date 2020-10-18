@@ -1,11 +1,13 @@
 import React from 'react';
 import { useRef } from 'react';
 import { useContext } from 'react';
+import useWindowScrollListener from '../../hooks/useWindowScrollListener';
 import { EditorContext } from '../../providers/editor.provider';
 
 const ContentBlock = ({styles, html, layout, children}) => {
-    const {setActiveElementCoords} = useContext(EditorContext);
+    const {setHoveredElementCoords, setActiveElementCoords, setEditing} = useContext(EditorContext);
     const contentRef = useRef();
+    const {scrollX, scrollY} = useWindowScrollListener();
 
     const contentFromBlock = () => {
         return {
@@ -38,18 +40,34 @@ const ContentBlock = ({styles, html, layout, children}) => {
 
     const handleMouseOver = (e) => {
         const {top, left, width, height} = contentRef.current.getBoundingClientRect();
-        setActiveElementCoords({top: top + window.scrollX, left: left + window.scrollY, width, height});
+        setHoveredElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
         e.stopPropagation();
     };
 
     const handleMouseOut = (e) => {
-        setActiveElementCoords(null);
+        setHoveredElementCoords(null);
         e.stopPropagation();
     }
 
+    const handleClick = (e) => {
+        const {top, left, width, height} = contentRef.current.getBoundingClientRect();
+        setEditing(true);
+        setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+
+    const props = {
+        ref: contentRef,
+        onMouseOver: handleMouseOver,
+        onMouseOut: handleMouseOut,
+        onClick: handleClick,
+        style: styles
+    };
+
     return (html) 
-        ? <div ref={contentRef} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} style={styles} dangerouslySetInnerHTML={contentFromBlock()}/>
-        : <div ref={contentRef} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} style={styles}>
+        ? <div {...props} dangerouslySetInnerHTML={contentFromBlock()}/>
+        : <div {...props}>
             {children.map(blockProps => (<ContentBlock key={blockProps.id} {...blockProps} />))}
         </div>;
 };
