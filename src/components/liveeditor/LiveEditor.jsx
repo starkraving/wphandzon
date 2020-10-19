@@ -17,7 +17,7 @@ const LiveEditor = () => {
     const {hoveredElementCoords, activeElementCoords, editing, setEditing, setActiveElementCoords} = useContext(EditorContext);
 
     const addItemContent = (item) => () => {
-        addContent(null, item);
+        addContent(null, null, item);
         setIsModalOpen(false)
     };
 
@@ -35,7 +35,7 @@ const LiveEditor = () => {
 
     return (
         <div style={{padding: '16px 1px 1px'}}>
-            <ContentBlock key={'main'} styles={{padding: '10px'}} html={''} layout={null}>{content}</ContentBlock>
+            <ContentBlock key={'main'} styles={content.styles} html={content.html} layout={content.layout}>{content.children}</ContentBlock>
             <ModalTrigger><button style={{marginTop: '10px'}}>Add new Content Block</button></ModalTrigger>
             <Modal title='Add a New Content Block'>
                 {

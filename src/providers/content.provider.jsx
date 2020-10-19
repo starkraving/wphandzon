@@ -2,26 +2,26 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {addNewContent} from '../utils/content';
 
 const defaults = {
-    content: []
+    content: {id: null, styles: {}, html: null, layout: null, children: []}
 };
 
 export const ContentContext = React.createContext({
     content: defaults.content,
-    addContent: (row, newContent) => {},
-    editContent: (row, id, content) => {},
-    removeContent: (row, id) => {}
+    addContent: (parentId, row, newContent) => {},
+    editContent: (parentId, row, id, content) => {},
+    removeContent: (parentId, row, id) => {}
 });
 
 const ContentProvider = ({pageService, children}) => {
     const [content, setContent] = useState(defaults.content);
 
-    const addContent = (row, newContent) => {
-        setContent(addNewContent(content, row, newContent));
+    const addContent = (parentId, row, newContent) => {
+        setContent(addNewContent(content, parentId, row, newContent));
     };
     
-    const editContent = (row, id, content) => {};
+    const editContent = (parentId, row, id, content) => {};
 
-    const removeContent = (row, id) => {};
+    const removeContent = (parentId, row, id) => {};
 
     const getInitialContent = useCallback(() => {
         pageService.getPageData().then(data => {
