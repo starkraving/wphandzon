@@ -1,10 +1,10 @@
 import React, { useContext, Fragment } from 'react';
 import { ModalContext } from '../../providers/modal.provider';
 
-const ModalTrigger = ({children}) => {
-    const {open, setIsModalOpen} = useContext(ModalContext);
+const ModalTrigger = ({target, children}) => {
+    const {setOpenModal} = useContext(ModalContext);
     const toggleOpen = () => {
-        setIsModalOpen(!open);
+        setOpenModal(target);
     }
 
     return <Fragment>

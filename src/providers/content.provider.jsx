@@ -21,7 +21,9 @@ const ContentProvider = ({pageService, children}) => {
     
     const editContent = (parentId, row, id, content) => {};
 
-    const removeContent = (parentId, row, id) => {};
+    const removeContent = (parentId, row, id) => {
+        console.log(`Element ${id} deleted!`);
+    };
 
     const getInitialContent = useCallback(() => {
         pageService.getPageData().then(data => {

@@ -4,8 +4,8 @@ import { useContext } from 'react';
 import useWindowScrollListener from '../../hooks/useWindowScrollListener';
 import { EditorContext } from '../../providers/editor.provider';
 
-const ContentBlock = ({styles, html, layout, children}) => {
-    const {setHoveredElementCoords, setActiveElementCoords, setEditing} = useContext(EditorContext);
+const ContentBlock = ({id, styles, html, layout, children}) => {
+    const {setHoveredElementCoords, setActiveElementCoords, setEditing, setActiveElementId} = useContext(EditorContext);
     const contentRef = useRef();
     const {scrollX, scrollY} = useWindowScrollListener();
 
@@ -53,6 +53,7 @@ const ContentBlock = ({styles, html, layout, children}) => {
         const {top, left, width, height} = contentRef.current.getBoundingClientRect();
         setEditing(true);
         setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
+        setActiveElementId(id);
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     }

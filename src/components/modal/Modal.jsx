@@ -1,15 +1,26 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { ModalOverlay, ModalContainer, ModalTitle, ModalContent, ModalButtons, ModalWrapper } from './styles';
-import { useEffect } from 'react';
+import { ModalOverlay, ModalContainer, ModalTitle, ModalContent, ModalWrapper } from './styles';
 import { ModalContext } from '../../providers/modal.provider';
 
-const Modal = ({title, children, submitText}) => {
-    const {open, customSubmit, customCancel, setIsModalOpen, onSubmit, onCancel} = useContext(ModalContext);
+const Modal = ({name, onSubmit: submitHandler, onCancel: cancelHandler, title, children}) => {
+    const {openModal, setOpenModal} = useContext(ModalContext);
+    const open = (openModal === name);
 
-    useEffect(() => {
-        setIsModalOpen(open);
-    }, [setIsModalOpen, open]);
+    const onSubmit = (e) => {
+        e.preventDefault();
+        setOpenModal(null);
+        if (submitHandler) {
+            submitHandler();
+        }
+    }
+
+    const onCancel = () => {
+        setOpenModal(null);
+        if (cancelHandler) {
+            cancelHandler();
+        }
+    }
 
     const closeModal = (e) => {
        e.stopPropagation();
@@ -24,21 +35,13 @@ const Modal = ({title, children, submitText}) => {
             <ModalContainer>
                 <ModalTitle>
                     {title}
-                    <button onClick={closeModal}>X</button>
+                    <button type='button' onClick={closeModal}>X</button>
                 </ModalTitle>
                 <ModalContent>
-                    {children}
+                    <form onSubmit={onSubmit}>
+                        {children}
+                    </form>
                 </ModalContent>
-                {
-                    (customSubmit || customCancel)
-                        ? (
-                            <ModalButtons>
-                                {customSubmit ? <button type='submit' onClick={onSubmit}>{submitText}</button> : ''}
-                                <button type='button' onClick={closeModal}>Cancel</button>
-                            </ModalButtons>
-                          )
-                        : ''
-                }
             </ModalContainer>
         </ModalWrapper>
     );
@@ -48,6 +51,7 @@ Modal.propTypes = {
     title: PropTypes.string,
     open: PropTypes.bool,
     onSubmit: PropTypes.func,
+    onCancel: PropTypes.func,
 };
 
 export default Modal;

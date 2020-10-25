@@ -13,18 +13,19 @@ import { ContentModalButton } from './styles';
 
 const LiveEditor = () => {
     const {content, addContent} = useContext(ContentContext);
-    const {setIsModalOpen} = useContext(ModalContext);
-    const {hoveredElementCoords, activeElementCoords, editing, setEditing, setActiveElementCoords} = useContext(EditorContext);
+    const {setOpenModal} = useContext(ModalContext);
+    const {hoveredElementCoords, activeElementCoords, editing, setEditing, setActiveElementCoords, setActiveElementId} = useContext(EditorContext);
 
     const addItemContent = (item) => () => {
         addContent(null, null, item);
-        setIsModalOpen(false)
+        setOpenModal(null)
     };
 
     const handleInactiveClick = useCallback(() => {
         setEditing(false);
         setActiveElementCoords(null);
-    }, [setEditing, setActiveElementCoords]);
+        setActiveElementId(null);
+    }, [setEditing, setActiveElementCoords, setActiveElementId]);
 
     useEffect(() => {
         document.addEventListener('click', handleInactiveClick);
@@ -36,8 +37,8 @@ const LiveEditor = () => {
     return (
         <div style={{padding: '16px 1px 1px'}}>
             <ContentBlock key={'main'} styles={content.styles} html={content.html} layout={content.layout}>{content.children}</ContentBlock>
-            <ModalTrigger><button style={{marginTop: '10px'}}>Add new Content Block</button></ModalTrigger>
-            <Modal title='Add a New Content Block'>
+            <ModalTrigger target='add_content'><button style={{marginTop: '10px'}}>Add new Content Block</button></ModalTrigger>
+            <Modal name='add_content' title='Add a New Content Block'>
                 {
                     contentTypes.map((item, idx) => {
                         return (<ContentModalButton key={`addbutton${idx}`} onClick={addItemContent(item)}>{item.title}</ContentModalButton>)

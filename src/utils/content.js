@@ -1,4 +1,4 @@
-const find = (haystack, needle) => {
+export const find = (haystack, needle) => {
     if (haystack.id && haystack.id === needle) {
         return haystack;
     }
@@ -6,7 +6,6 @@ const find = (haystack, needle) => {
         let child;
         for (let i = 0 ; i < haystack.children.length ; i++) {
             child = find(haystack.children[i], needle);
-            console.log(typeof child);
             if (null !== child) {
                 return child;
             }
@@ -21,7 +20,6 @@ export function addNewContent(content, parentId, row, newContent) {
 
     if (parentId !== null) {
         parent = find(content, parentId);
-        console.log(parent);
         if (!parent) {return content;}
     }
 
