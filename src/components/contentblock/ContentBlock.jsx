@@ -5,7 +5,14 @@ import useWindowScrollListener from '../../hooks/useWindowScrollListener';
 import { EditorContext } from '../../providers/editor.provider';
 
 const ContentBlock = ({id, styles, html, layout, children}) => {
-    const {setHoveredElementCoords, setActiveElementCoords, setEditing, setActiveElementId} = useContext(EditorContext);
+    const {
+        setHoveredElementCoords,
+        setActiveElementCoords,
+        setEditing,
+        setActiveElementId,
+        activeElementId,
+        textEditing
+    } = useContext(EditorContext);
     const contentRef = useRef();
     const {scrollX, scrollY} = useWindowScrollListener();
 
@@ -39,21 +46,29 @@ const ContentBlock = ({id, styles, html, layout, children}) => {
     };
 
     const handleMouseOver = (e) => {
+        if (textEditing) {
+            return;
+        }
         const {top, left, width, height} = contentRef.current.getBoundingClientRect();
         setHoveredElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
         e.stopPropagation();
     };
 
     const handleMouseOut = (e) => {
+        if (textEditing) {
+            return;
+        }
         setHoveredElementCoords(null);
         e.stopPropagation();
     }
 
     const handleClick = (e) => {
-        const {top, left, width, height} = contentRef.current.getBoundingClientRect();
-        setEditing(true);
-        setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
-        setActiveElementId(id);
+        if (!textEditing) {
+            const {top, left, width, height} = contentRef.current.getBoundingClientRect();
+            setEditing(true);
+            setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
+            setActiveElementId(id);
+        }
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     }
@@ -65,6 +80,9 @@ const ContentBlock = ({id, styles, html, layout, children}) => {
         onClick: handleClick,
         style: styles
     };
+    if (textEditing && activeElementId === id) {
+        props.contenteditable = 'true';
+    }
 
     return (html) 
         ? <div {...props} dangerouslySetInnerHTML={contentFromBlock()}/>

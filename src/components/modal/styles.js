@@ -63,10 +63,11 @@ export const ModalButtons = styled.div`
     button {
         border: 0;
         margin: 0;
-        padding: 3px 5px;
-        border-radius: 3px;
-        background-color: blue;
-        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #eee;
+        color: #333;
+        border: 1px solid #333;
 
         &[type=button] {
             background-color: gray;

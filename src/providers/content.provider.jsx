@@ -22,7 +22,7 @@ const ContentProvider = ({pageService, children}) => {
     const editContent = (parentId, row, id, content) => {};
 
     const removeContent = (parentId, row, id) => {
-        console.log(`Element ${id} deleted!`);
+        console.log('DELETE: ', parentId, row, id);
     };
 
     const getInitialContent = useCallback(() => {

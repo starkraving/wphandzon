@@ -17,9 +17,9 @@ export const MenuBar = styled.menu`
 export const Button = styled.div`
     border: 0;
     display: inline-block;
-    width: 24px;
-    height: 24px;
-    padding: 0;
+    width: 16px;
+    height: 16px;
+    padding: 2px 4px 6px;
     text-align: center;
     background-color: green;
     cursor: ${props => props.$cursor || 'initial'};
