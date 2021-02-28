@@ -11,14 +11,15 @@ import { ModalButtons } from '../modal/styles';
 const ActiveContentHighlighter = ({coords}) => {
     const {topBorderStyles, rightBorderStyles, bottomBorderStyles, leftBorderStyles} = useStylesFromCoords(coords);
     const {removeContent} = useContext(ContentContext);
-    const {activeElementId, textEditing, setTextEditing} = useContext(EditorContext);
+    const {activeElement, textEditing, setTextEditing, setEditing} = useContext(EditorContext);
 
     const keepActiveFocus = (e) => {
         e.nativeEvent.stopImmediatePropagation();
     };
 
     const deleteElement = () => {
-        removeContent(null, null, activeElementId);
+        removeContent(activeElement);
+        setEditing(false);
     };
 
     const startEditing = () => {
@@ -33,13 +34,15 @@ const ActiveContentHighlighter = ({coords}) => {
         <>
             <Border style={topBorderStyles} onClick={keepActiveFocus}>
                 {
-                    !textEditing && <MenuBar>
+                    !textEditing && activeElement.id && <MenuBar>
                         <Button $cursor='move' title='Drag the element to another position within its container'>
                             <Icon icon={faArrowsAlt} />
                         </Button>
-                        <Button $cursor='text' title='Start textEditing the content of the element' onClick={startEditing}>
-                            <Icon icon={faICursor} />
-                        </Button>
+                        {
+                            !activeElement.hasChildren && <Button $cursor='text' title='Start textEditing the content of the element' onClick={startEditing}>
+                                <Icon icon={faICursor} />
+                            </Button>
+                        }
                         <Button title='Add a new sibling element'>
                             <Icon icon={faPlus} />
                         </Button>

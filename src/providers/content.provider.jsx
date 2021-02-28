@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {addNewContent} from '../utils/content';
+import {addNewContent, deleteContent} from '../utils/content';
 
 const defaults = {
     content: {id: null, styles: {}, html: null, layout: null, children: []}
@@ -8,8 +8,8 @@ const defaults = {
 export const ContentContext = React.createContext({
     content: defaults.content,
     addContent: (parentId, row, newContent) => {},
-    editContent: (parentId, row, id, content) => {},
-    removeContent: (parentId, row, id) => {}
+    editContent: (activeElement) => {},
+    removeContent: (activeElement) => {}
 });
 
 const ContentProvider = ({pageService, children}) => {
@@ -19,10 +19,11 @@ const ContentProvider = ({pageService, children}) => {
         setContent(addNewContent(content, parentId, row, newContent));
     };
     
-    const editContent = (parentId, row, id, content) => {};
+    const editContent = (activeElement) => {};
 
-    const removeContent = (parentId, row, id) => {
-        console.log('DELETE: ', parentId, row, id);
+    const removeContent = (activeElement) => {
+        const {parentId, row, id} = activeElement;
+        setContent(deleteContent(content, parentId, row, id));
     };
 
     const getInitialContent = useCallback(() => {

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const defaults = {
     editing: false,
     textEditing: false,
-    activeElementId: null,
+    activeElement: null,
     hoveredElementCoords: null,
     activeElementCoords: null,
 }
@@ -11,14 +11,14 @@ const defaults = {
 export const EditorContext = React.createContext({
     editing: defaults.editing,
     textEditing: defaults.textEditing,
-    activeElementId: defaults.activeElementId,
+    activeElement: defaults.activeElement,
     hoveredElementCoords: defaults.hoveredElementCoords,
     activeElementCoords: defaults.activeElementCoords,
     setEditing: () => {},
     setTextEditing: () => {},
     setHoveredElementCoords: () => {},
     setActiveElementCoords: () => {},
-    setActiveElementId: () => {},
+    setActiveElement: () => {},
 });
 
 const EditorProvider = ({children}) => {
@@ -26,18 +26,18 @@ const EditorProvider = ({children}) => {
     const [textEditing, setTextEditing] = useState(defaults.textEditing);
     const [hoveredElementCoords, setHoveredElementCoords] = useState(defaults.hoveredElementCoords);
     const [activeElementCoords, setActiveElementCoords] = useState(defaults.activeElementCoords);
-    const [activeElementId, setActiveElementId] = useState(defaults.activeElementId);
+    const [activeElement, setActiveElement] = useState(defaults.activeElement);
 
     return (
         <EditorContext.Provider value={{
             editing,
             textEditing,
-            activeElementId,
+            activeElement,
             hoveredElementCoords,
             activeElementCoords,
             setEditing,
             setTextEditing,
-            setActiveElementId,
+            setActiveElement: setActiveElement,
             setHoveredElementCoords,
             setActiveElementCoords
         }}>{children}</EditorContext.Provider>

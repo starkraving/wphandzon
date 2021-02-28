@@ -4,15 +4,16 @@ import { useContext } from 'react';
 import useWindowScrollListener from '../../hooks/useWindowScrollListener';
 import { EditorContext } from '../../providers/editor.provider';
 
-const ContentBlock = ({id, styles, html, layout, children}) => {
+const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
     const {
         setHoveredElementCoords,
         setActiveElementCoords,
         setEditing,
-        setActiveElementId,
-        activeElementId,
+        setActiveElement,
+        activeElement,
         textEditing
     } = useContext(EditorContext);
+
     const contentRef = useRef();
     const {scrollX, scrollY} = useWindowScrollListener();
 
@@ -67,7 +68,14 @@ const ContentBlock = ({id, styles, html, layout, children}) => {
             const {top, left, width, height} = contentRef.current.getBoundingClientRect();
             setEditing(true);
             setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
-            setActiveElementId(id);
+            setActiveElement({
+                id,
+                parentId,
+                row: layout.row,
+                current: contentRef.current,
+                styles,
+                hasChildren: !html
+            });
         }
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
@@ -80,14 +88,14 @@ const ContentBlock = ({id, styles, html, layout, children}) => {
         onClick: handleClick,
         style: styles
     };
-    if (textEditing && activeElementId === id) {
-        props.contenteditable = 'true';
+    if (textEditing && activeElement.id === id) {
+        props.contentEditable = 'true';
     }
 
     return (html) 
         ? <div {...props} dangerouslySetInnerHTML={contentFromBlock()}/>
         : <div {...props}>
-            {children.map(blockProps => (<ContentBlock key={blockProps.id} {...blockProps} />))}
+            {children.map(blockProps => (<ContentBlock key={blockProps.id} parentId={id} {...blockProps} />))}
         </div>;
 };
 
