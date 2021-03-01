@@ -44,7 +44,7 @@ const ActiveContentHighlighter = ({coords}) => {
                             </Button>
                         }
                         <Button title='Add a new sibling element'>
-                            <Icon icon={faPlus} />
+                            <ModalTrigger target='add_content'><Icon icon={faPlus} /></ModalTrigger>
                         </Button>
                         <Separator />
                         <Button title='Delete this element'>

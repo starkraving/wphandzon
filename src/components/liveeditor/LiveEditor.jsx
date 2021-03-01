@@ -14,12 +14,47 @@ import { ContentModalButton } from './styles';
 const LiveEditor = () => {
     const {content, addContent} = useContext(ContentContext);
     const {setOpenModal} = useContext(ModalContext);
-    const {hoveredElementCoords, activeElementCoords, editing, setEditing, setActiveElementCoords, setActiveElement} = useContext(EditorContext);
+    const {
+        hoveredElementCoords,
+        activeElementCoords,
+        activeElement,
+        editing,
+        setEditing,
+        setActiveElementCoords,
+        setActiveElement
+    } = useContext(EditorContext);
 
     const addItemContent = (item) => () => {
-        addContent(null, null, item);
+        let parentId = null;
+        let row = null;
+        let column = 1;
+        if (activeElement) {
+            parentId = activeElement.parentId;
+            row = activeElement.layout.row;
+            column = activeElement.layout.column;
+        }
+        addContent(parentId, row, column, item);
         setOpenModal(null)
     };
+
+    const duplicateItemContent = () => {
+        if (!activeElement) {
+            return;
+        }
+        const {parentId, styles, html, layout, children} = activeElement;
+        addContent(
+            parentId,
+            layout.row,
+            layout.column,
+            {
+                styles,
+                html,
+                layout,
+                children
+            }
+        )
+        setOpenModal(null);
+    }
 
     const handleInactiveClick = useCallback(() => {
         setEditing(false);
@@ -43,6 +78,9 @@ const LiveEditor = () => {
                     contentTypes.map((item, idx) => {
                         return (<ContentModalButton key={`addbutton${idx}`} onClick={addItemContent(item)}>{item.title}</ContentModalButton>)
                     })
+                }
+                {
+                    activeElement && <ContentModalButton key='dupebutton' onClick={duplicateItemContent}>Copy Selected Item</ContentModalButton>
                 }
             </Modal>
             {

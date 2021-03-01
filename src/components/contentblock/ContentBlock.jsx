@@ -69,12 +69,13 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
             setEditing(true);
             setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
             setActiveElement({
-                id,
                 parentId,
-                row: layout.row,
-                current: contentRef.current,
+                id,
                 styles,
-                hasChildren: !html
+                html,
+                layout,
+                children,
+                current: contentRef.current
             });
         }
         e.stopPropagation();

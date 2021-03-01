@@ -15,7 +15,7 @@ export const find = (haystack, needle) => {
     return null;
 }
 
-export function addNewContent(content, parentId, row, newContent) {
+export function addNewContent(content, parentId, row, column, newContent) {
     let parent = content;
 
     if (parentId !== null) {
@@ -43,14 +43,12 @@ export function addNewContent(content, parentId, row, newContent) {
     newContent.layout = {
         ...newContent.layout,
         row,
-        column: 1,
+        column,
         span: 12,
     };
-    if (maxRow >= row) {
-        // TODO: update columns to add in new content;
-    }
     
     parent.children.push(newContent);
+    parent.children = spreadRowChildren(parent.children, row);
 
     return content;
 }
@@ -62,7 +60,7 @@ export function deleteContent(content, parentId, row, id) {
         if (!parent) {return content;}
     }
 
-    parent.children = spreadRemainingRowChildren(
+    parent.children = spreadRowChildren(
         parent.children.filter((child) => child.id !== id),
         row
     );
@@ -70,7 +68,7 @@ export function deleteContent(content, parentId, row, id) {
     return content;
 }
 
-function spreadRemainingRowChildren(children, row) {
+function spreadRowChildren(children, row) {
     if (!children || !children instanceof Array || children.length === 0) {
         return children;
     }
@@ -93,23 +91,8 @@ function spreadRemainingRowChildren(children, row) {
     const spread = Math.floor(12 / siblings.length);
     const remainder = 12 - (spread * siblings.length);
     siblings
-        .sort((prev, next) => {
-            if (prev.child.layout.column < next.child.layout.column) {
-                return -1;
-            }
-            if (prev.child.layout.column > next.child.layout.column) {
-                return 1;
-            }
-            return 0;
-        })
-        .map((el, idx, siblings) => {
-            el.child.layout.span = spread;
-            el.child.layout.column = (idx * spread) + 1;
-            if (idx === siblings.length - 1 && remainder) {
-                el.child.layout.span += remainder;
-            }
-            return el;
-        })
+        .sort(sortByColumn)
+        .map(spreadColumns(spread, remainder))
         .forEach((el) => {
             const {idx, child} = el;
             children[idx] = child;
@@ -117,4 +100,25 @@ function spreadRemainingRowChildren(children, row) {
     
     return children;
 
+}
+
+function sortByColumn(prev, next) {
+    if (prev.child.layout.column < next.child.layout.column) {
+        return -1;
+    }
+    if (prev.child.layout.column > next.child.layout.column) {
+        return 1;
+    }
+    return 0;
+}
+
+function spreadColumns(spread, remainder) {
+    return (el, idx, siblings) => {
+        el.child.layout.span = spread;
+        el.child.layout.column = (idx * spread) + 1;
+        if (idx === siblings.length - 1 && remainder) {
+            el.child.layout.span += remainder;
+        }
+        return el;
+    };
 }

@@ -7,7 +7,7 @@ const defaults = {
 
 export const ContentContext = React.createContext({
     content: defaults.content,
-    addContent: (parentId, row, newContent) => {},
+    addContent: (parentId, row, column, newContent) => {},
     editContent: (activeElement) => {},
     removeContent: (activeElement) => {}
 });
@@ -15,15 +15,15 @@ export const ContentContext = React.createContext({
 const ContentProvider = ({pageService, children}) => {
     const [content, setContent] = useState(defaults.content);
 
-    const addContent = (parentId, row, newContent) => {
-        setContent(addNewContent(content, parentId, row, newContent));
+    const addContent = (parentId, row, column, newContent) => {
+        setContent(addNewContent(content, parentId, row, column, newContent));
     };
     
     const editContent = (activeElement) => {};
 
     const removeContent = (activeElement) => {
-        const {parentId, row, id} = activeElement;
-        setContent(deleteContent(content, parentId, row, id));
+        const {parentId, layout, id} = activeElement;
+        setContent(deleteContent(content, parentId, layout.row, id));
     };
 
     const getInitialContent = useCallback(() => {
