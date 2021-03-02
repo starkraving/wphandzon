@@ -46,12 +46,26 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         position: 'relative'
     };
 
+    const setElementCoords = (type) => {
+        const {top, left, width, height} = contentRef.current.getBoundingClientRect();
+        const args = {top: (top + scrollY), left: (left + scrollX), width, height};
+        switch (type) {
+            case 'hovered' :
+                setHoveredElementCoords(args);
+                break;
+            case 'active' :
+                setActiveElementCoords(args);
+                break;
+            default :
+                console.warn(`Invalid coord type of "${type}" used in setElementCoords`);
+        }
+    };
+
     const handleMouseOver = (e) => {
         if (textEditing) {
             return;
         }
-        const {top, left, width, height} = contentRef.current.getBoundingClientRect();
-        setHoveredElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
+        setElementCoords('hovered');
         e.stopPropagation();
     };
 
@@ -65,9 +79,8 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
 
     const handleClick = (e) => {
         if (!textEditing) {
-            const {top, left, width, height} = contentRef.current.getBoundingClientRect();
             setEditing(true);
-            setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
+            setElementCoords('active');
             setActiveElement({
                 parentId,
                 id,
@@ -86,8 +99,7 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         if (!textEditing) {
             return;
         }
-        const {top, left, width, height} = contentRef.current.getBoundingClientRect();
-        setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
+        setElementCoords('active');
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     }

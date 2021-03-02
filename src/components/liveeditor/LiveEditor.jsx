@@ -18,6 +18,7 @@ const LiveEditor = () => {
         hoveredElementCoords,
         activeElementCoords,
         activeElement,
+        textEditing,
         editing,
         setEditing,
         setActiveElementCoords,
@@ -57,10 +58,13 @@ const LiveEditor = () => {
     }
 
     const handleInactiveClick = useCallback(() => {
+        if (textEditing) {
+            return;
+        }
         setEditing(false);
         setActiveElementCoords(null);
         setActiveElement(null);
-    }, [setEditing, setActiveElementCoords, setActiveElement]);
+    }, [textEditing, setEditing, setActiveElementCoords, setActiveElement]);
 
     useEffect(() => {
         document.addEventListener('click', handleInactiveClick);
