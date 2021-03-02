@@ -82,11 +82,22 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         e.nativeEvent.stopImmediatePropagation();
     }
 
+    const handleKeyUp = (e) => {
+        if (!textEditing) {
+            return;
+        }
+        const {top, left, width, height} = contentRef.current.getBoundingClientRect();
+        setActiveElementCoords({top: (top + scrollY), left: (left + scrollX), width, height});
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+
     const props = {
         ref: contentRef,
         onMouseOver: handleMouseOver,
         onMouseOut: handleMouseOut,
         onClick: handleClick,
+        onKeyUp: handleKeyUp,
         style: styles
     };
     if (textEditing && activeElement.id === id) {
