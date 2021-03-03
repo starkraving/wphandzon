@@ -68,6 +68,31 @@ export function deleteContent(content, parentId, row, id) {
     return content;
 }
 
+export function updateContent(content, parentId, row, id, element) {
+    let parent = content;
+    if (parentId !== null) {
+        parent = find(content, parentId);
+        if (!parent) {return content;}
+    }
+
+    const pos = parent.children.reduce((carry, child, idx) => {
+        if (carry !== false) {
+            return carry;
+        }
+        return (child.id === id) ? idx : carry;
+    }, false);
+
+    if (pos !== false) {
+        parent.children.splice(pos, 1, {
+            ...parent.children[pos],
+            ...element
+        });
+        parent.children = spreadRowChildren(parent.children, row);
+    }
+
+    return content;
+}
+
 function spreadRowChildren(children, row) {
     if (!children || !children instanceof Array || children.length === 0) {
         return children;

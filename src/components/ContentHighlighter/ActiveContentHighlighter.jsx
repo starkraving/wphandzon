@@ -10,7 +10,7 @@ import { ModalButtons } from '../modal/styles';
 
 const ActiveContentHighlighter = ({coords}) => {
     const {topBorderStyles, rightBorderStyles, bottomBorderStyles, leftBorderStyles} = useStylesFromCoords(coords);
-    const {removeContent} = useContext(ContentContext);
+    const {editContent, removeContent} = useContext(ContentContext);
     const {activeElement, textEditing, setTextEditing, setEditing} = useContext(EditorContext);
 
     const keepActiveFocus = (e) => {
@@ -27,6 +27,7 @@ const ActiveContentHighlighter = ({coords}) => {
     };
 
     const stopEditing = () => {
+        editContent(activeElement, textEditing);
         setTextEditing(false);
     };
 

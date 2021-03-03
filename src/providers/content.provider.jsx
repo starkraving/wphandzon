@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {addNewContent, deleteContent} from '../utils/content';
+import {addNewContent, deleteContent, updateContent} from '../utils/content';
 
 const defaults = {
     content: {id: null, styles: {}, html: null, layout: null, children: []}
@@ -19,7 +19,19 @@ const ContentProvider = ({pageService, children}) => {
         setContent(addNewContent(content, parentId, row, column, newContent));
     };
     
-    const editContent = (activeElement) => {};
+    const editContent = (activeElement, textEditing) => {
+        let {parentId, layout, id, styles, html, children, current} = activeElement;
+        if (textEditing) {
+            html = current.innerHTML;
+        }
+        setContent(updateContent(content, parentId, layout.row, id, {
+            id,
+            styles,
+            html,
+            layout,
+            children
+        }));
+    };
 
     const removeContent = (activeElement) => {
         const {parentId, layout, id} = activeElement;
