@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import useStylesFromCoords from '../../hooks/useStylesFromCoords';
-import { Border, Button, Icon, MenuBar, Separator } from './styles';
+import { Border, BorderHandle, Button, Icon, MenuBar, Separator } from './styles';
 import {faArrowsAlt, faICursor, faPlus, faTrashAlt, faSave} from '@fortawesome/free-solid-svg-icons'
 import ModalTrigger from '../modal/ModalTrigger';
 import { ContentContext } from '../../providers/content.provider';
@@ -70,9 +70,13 @@ const ActiveContentHighlighter = ({coords}) => {
                     </ModalButtons>
                 </Modal>
             </Border>
-            <Border style={rightBorderStyles} />
+            <Border style={rightBorderStyles}>
+                <BorderHandle title='Resize element from the right edge' />
+            </Border>
             <Border style={bottomBorderStyles} />
-            <Border style={leftBorderStyles} />
+            <Border style={leftBorderStyles}>
+                <BorderHandle title='Resize element from the left edge' />
+            </Border>
         </>
     );
 }

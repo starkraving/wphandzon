@@ -34,3 +34,16 @@ export const Icon = styled(FontAwesomeIcon)`
 export const Separator = styled.span`
     margin-left: 3px;
 `;
+
+export const BorderHandle = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 16px;
+    width: 16px;
+    background-color: #fff;
+    border: 1px solid green;
+    box-sizing: border-box;
+    margin: -8px -8px;
+    cursor: col-resize;
+`;
