@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {addNewContent, deleteContent, updateContent} from '../utils/content';
+import {addNewContent, deleteContent, resizeContentRow, updateContent} from '../utils/content';
 
 const defaults = {
     content: {id: null, styles: {}, html: null, layout: null, children: []}
@@ -8,8 +8,9 @@ const defaults = {
 export const ContentContext = React.createContext({
     content: defaults.content,
     addContent: (parentId, row, column, newContent) => {},
-    editContent: (activeElement) => {},
-    removeContent: (activeElement) => {}
+    editContent: (activeElement, textEditing) => {},
+    removeContent: (activeElement) => {},
+    resizeContent: (...args) => {}
 });
 
 const ContentProvider = ({pageService, children}) => {
@@ -38,6 +39,10 @@ const ContentProvider = ({pageService, children}) => {
         setContent(deleteContent(content, parentId, layout.row, id));
     };
 
+    const resizeContent = (parentId, row, id, action, spanChange) => {
+        setContent(resizeContentRow(content, parentId, row, id, action, spanChange));
+    };
+
     const getInitialContent = useCallback(() => {
         pageService.getPageData().then(data => {
             setContent(data);
@@ -54,6 +59,7 @@ const ContentProvider = ({pageService, children}) => {
             addContent,
             editContent,
             removeContent,
+            resizeContent
         }}>{children}</ContentContext.Provider>
     );
 }

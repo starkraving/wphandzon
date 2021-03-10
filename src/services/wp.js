@@ -130,7 +130,7 @@ class WPService {
                                     children: []
                                 },
                                 {
-                                    id: 23462,
+                                    id: 23460,
                                     type: "content",
                                     styles: {},
                                     html: "<h3>Replacement Window Shades</h3><p>When it comes to electrical repair, JohnnyGo has years of experience that ensures we'll provide expert solutions for electrical problems.</p>",
@@ -143,7 +143,7 @@ class WPService {
                                     children: []
                                 },
                                 {
-                                    id: 23460,
+                                    id: 23461,
                                     type: "content",
                                     styles: {},
                                     html: "<h3>Secondary Double Glazing</h3><p>If you need to maintain your garden, to mow the grass, prune the trees and do other landscaping, our gardnener knows about it a lot.</p>",
@@ -156,7 +156,7 @@ class WPService {
                                     children: []
                                 },
                                 {
-                                    id: 23461,
+                                    id: 23462,
                                     type: "content",
                                     styles: {},
                                     html: "<h3>Bi-folding Doors</h3><p>Our hour constantly requires some maintenance. If you are tired of all these little breakdowns that don't let you feel yourself cozy</p>",

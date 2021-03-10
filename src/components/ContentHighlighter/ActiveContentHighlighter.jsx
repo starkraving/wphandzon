@@ -11,7 +11,7 @@ import { ModalButtons } from '../modal/styles';
 const ActiveContentHighlighter = ({coords}) => {
     const {topBorderStyles, rightBorderStyles, bottomBorderStyles, leftBorderStyles} = useStylesFromCoords(coords);
     const {editContent, removeContent} = useContext(ContentContext);
-    const {activeElement, textEditing, setTextEditing, setEditing} = useContext(EditorContext);
+    const {activeElement, textEditing, setTextEditing, setEditing, setResizing, setResizingMouseCoords} = useContext(EditorContext);
 
     const keepActiveFocus = (e) => {
         e.nativeEvent.stopImmediatePropagation();
@@ -30,6 +30,12 @@ const ActiveContentHighlighter = ({coords}) => {
         editContent(activeElement, textEditing);
         setTextEditing(false);
     };
+
+    const startResizing = (direction) => (e) => {
+        document.body.style.userSelect = 'none';
+        setResizing(true);
+        setResizingMouseCoords([direction, e.screenX, e.screenX, activeElement, activeElement]);
+    }
 
     return (
         <>
@@ -71,11 +77,11 @@ const ActiveContentHighlighter = ({coords}) => {
                 </Modal>
             </Border>
             <Border style={rightBorderStyles}>
-                <BorderHandle title='Resize element from the right edge' />
+                <BorderHandle title='Resize element from the right edge' onMouseDown={startResizing('right')} />
             </Border>
             <Border style={bottomBorderStyles} />
             <Border style={leftBorderStyles}>
-                <BorderHandle title='Resize element from the left edge' />
+                <BorderHandle title='Resize element from the left edge' onMouseDown={startResizing('left')} />
             </Border>
         </>
     );

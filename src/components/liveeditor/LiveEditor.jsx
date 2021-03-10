@@ -1,5 +1,6 @@
 import React, {useCallback, useContext} from 'react';
 import { useEffect } from 'react';
+import useResizeListener from '../../hooks/useResizeListener';
 import {ContentContext} from '../../providers/content.provider';
 import { EditorContext } from '../../providers/editor.provider';
 import {ModalContext} from '../../providers/modal.provider';
@@ -20,10 +21,14 @@ const LiveEditor = () => {
         activeElement,
         textEditing,
         editing,
+        resizing,
         setEditing,
+        setResizing,
         setActiveElementCoords,
         setActiveElement
     } = useContext(EditorContext);
+    
+    useResizeListener();
 
     const addItemContent = (item) => () => {
         let parentId = null;
@@ -66,12 +71,27 @@ const LiveEditor = () => {
         setActiveElement(null);
     }, [textEditing, setEditing, setActiveElementCoords, setActiveElement]);
 
+    const handleResize = useCallback(() => {
+        if (!resizing) {
+            return;
+        }
+        document.body.style.userSelect = 'auto';
+        setResizing(false);
+    }, [resizing, setResizing]);
+
     useEffect(() => {
         document.addEventListener('click', handleInactiveClick);
         return () => {
             document.removeEventListener('click', handleInactiveClick);
         };
     }, [handleInactiveClick]);
+
+    useEffect(() => {
+        window.addEventListener('mouseup', handleResize);
+        return () => {
+            window.removeEventListener('mouseup', handleResize);
+        }
+    }, [handleResize]);
 
     return (
         <div style={{padding: '16px 1px 1px'}}>

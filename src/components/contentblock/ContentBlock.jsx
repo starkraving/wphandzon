@@ -1,21 +1,31 @@
 import React from 'react';
 import { useRef } from 'react';
 import { useContext } from 'react';
-import useWindowScrollListener from '../../hooks/useWindowScrollListener';
 import { EditorContext } from '../../providers/editor.provider';
 
 const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
     const {
         setHoveredElementCoords,
-        setActiveElementCoords,
+        setResizingMouseCoords,
         setEditing,
         setActiveElement,
         activeElement,
-        textEditing
+        textEditing,
+        resizing,
+        setElementCoords
     } = useContext(EditorContext);
 
     const contentRef = useRef();
-    const {scrollX, scrollY} = useWindowScrollListener();
+
+    const currentElement = {
+        parentId,
+        id,
+        styles,
+        html,
+        layout,
+        children,
+        current: contentRef.current
+    };
 
     const contentFromBlock = () => {
         return {
@@ -23,7 +33,6 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         };
     };
 
-    // will want to switch from inline styles to styled component with layout, styles and children as arg
     const layoutStyles = (layout) ? {
         gridRow: layout.row,
         msGridRow: layout.row,
@@ -46,27 +55,13 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         position: 'relative'
     };
 
-    const setElementCoords = (type) => {
-        const {top, left, width, height} = contentRef.current.getBoundingClientRect();
-        const args = {top: (top + scrollY), left: (left + scrollX), width, height};
-        switch (type) {
-            case 'hovered' :
-                setHoveredElementCoords(args);
-                break;
-            case 'active' :
-                setActiveElementCoords(args);
-                break;
-            default :
-                console.warn(`Invalid coord type of "${type}" used in setElementCoords`);
-        }
-    };
-
     const handleMouseOver = (e) => {
         if (textEditing) {
             return;
         }
-        setElementCoords('hovered');
+        setElementCoords('hovered', contentRef.current);
         e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
     };
 
     const handleMouseOut = (e) => {
@@ -75,21 +70,40 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         }
         setHoveredElementCoords(null);
         e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+
+    const handleMouseMove = (e) => {
+        const ts = Date.now();
+        // de-bouncing
+        if (!resizing || !activeElement || ts % 100 !== 0) {
+            return;
+        }
+        // resizing into a sibling or resizing on its own row
+        if (-1 === [parentId, id].indexOf(activeElement.parentId) || (parentId === activeElement.parentId && layout.row !== activeElement.layout.row)) {
+            return;
+        }
+        
+        const screenX = e.screenX;
+        setResizingMouseCoords((curr) => [
+                curr[0],
+                curr[1],
+                screenX,
+                activeElement,
+                (id === activeElement.parentId) ? activeElement : currentElement
+            ]
+        );
+        setElementCoords('active', activeElement.current);
+        setElementCoords('hovered', contentRef.current);
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
     }
 
     const handleClick = (e) => {
         if (!textEditing) {
             setEditing(true);
-            setElementCoords('active');
-            setActiveElement({
-                parentId,
-                id,
-                styles,
-                html,
-                layout,
-                children,
-                current: contentRef.current
-            });
+            setElementCoords('active', contentRef.current);
+            setActiveElement(currentElement);
         }
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
@@ -99,7 +113,7 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         if (!textEditing) {
             return;
         }
-        setElementCoords('active');
+        setElementCoords('active', contentRef.current);
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     }
@@ -108,12 +122,16 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         ref: contentRef,
         onMouseOver: handleMouseOver,
         onMouseOut: handleMouseOut,
+        onMouseMove: handleMouseMove,
         onClick: handleClick,
         onKeyUp: handleKeyUp,
         style: styles
     };
     if (textEditing && activeElement.id === id) {
         props.contentEditable = 'true';
+    }
+    if (resizing) {
+        props.unselectable = 'on';
     }
 
     return (html) 
