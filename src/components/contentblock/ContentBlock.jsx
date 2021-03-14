@@ -8,6 +8,7 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         setHoveredElementCoords,
         setResizingMouseCoords,
         setEditing,
+        setTextEditing,
         setActiveElement,
         activeElement,
         textEditing,
@@ -109,6 +110,17 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         e.nativeEvent.stopImmediatePropagation();
     }
 
+    const handleDblClick = (e) => {
+        if (!textEditing && !children.length) {
+            setTextEditing(true);
+            setElementCoords(('active'), contentRef.current);
+            setActiveElement(currentElement);
+            setTimeout(() => {currentElement.current.focus();}, 0);
+        }
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+
     const handleKeyUp = (e) => {
         if (!textEditing) {
             return;
@@ -124,6 +136,7 @@ const ContentBlock = ({parentId, id, styles, html, layout, children}) => {
         onMouseOut: handleMouseOut,
         onMouseMove: handleMouseMove,
         onClick: handleClick,
+        onDoubleClick: handleDblClick,
         onKeyUp: handleKeyUp,
         style: styles
     };
